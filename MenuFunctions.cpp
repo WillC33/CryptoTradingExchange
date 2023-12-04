@@ -1,5 +1,4 @@
 #include <iostream>
-#include <map>
 
 /**
  * Prints the help option
@@ -47,25 +46,4 @@ void printWallet()
 void completeTrades()
 {
     std::cout << "Completing timeframe" << std::endl;
-}
-
-/**
- * Processes a given userOption
- * {param}: const int userOption
- */
-void processUserOption(const int userOption)
-{
-    //maps int keys to void * functions in the list 'menu'
-    std::map<int,void(*)()> menu;
-    menu[1] = printHelp;
-    menu[2] = printMarketStats;
-    menu[3] = handleOffer;
-    menu[4] = handleBid;
-    menu[5] = printWallet;
-    menu[6] = completeTrades;
-
-    if (1 <= userOption && userOption <= 6)
-        menu[userOption]();
-    else
-        std::cout << "Invalid Option. Please select 1-6." << std::endl;
 }

@@ -4,5 +4,11 @@ project(untitled)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(untitled main.cpp
-        ioOperations.cpp
-        menuFunctions.cpp)
+        IoOperations.cpp
+        MenuFunctions.cpp
+        OrderBookEntry.cpp
+        OrderBookEntry.h
+        MerkelMain.cpp
+        MerkelMain.h
+        MenuFunctions.h
+        FinancialFunctions.cpp)
