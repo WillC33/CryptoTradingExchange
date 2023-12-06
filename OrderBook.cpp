@@ -49,21 +49,15 @@ std::vector<std::string> OrderBook::getKnownProducts()
     return products;
 }
 
+/**
+ * \brief returns the full list of order book entrie
+ * \return a vector of entries
+ */
 std::vector<OrderBookEntry> OrderBook::getOrders()
 {
     return entries;
 }
 
-std::vector<OrderBookEntry> OrderBook::getOrders(const std::string& product)
-{
-    std::vector<OrderBookEntry> orders;
-    for(const auto& e : entries)
-    {
-        if(e.product == product)
-            orders.push_back(e);
-    }
-    return orders;
-}
 
 /**
 * \brief Tracks the percentage change since logon
@@ -163,3 +157,119 @@ std::vector<OrderBookEntry> OrderBook::filterOrders(const std::string& product, 
     }
     return filtered;
 }
+
+/**
+ * \brief writes a new entry to the orderbook
+ * \param entry the entry to write
+ */
+void OrderBook::writeOrder(const OrderBookEntry& entry)
+{
+        entries.push_back(entry);
+        std::sort(entries.begin(), entries.end(), OrderBook::compare_by_timestamp);
+}
+
+/**
+ * \brief Gets the current length of the order book
+ * \return the number of orders
+ */
+unsigned int OrderBook::numberOfOrders()
+{
+    return this->entries.size();
+}
+
+/**
+ * \brief compares two orders by their timestamp
+ * \param e1 the first entry
+ * \param e2 the second entry
+ * \return whether the first is higher or lower
+ */
+bool OrderBook::compare_by_timestamp(const OrderBookEntry& e1, const OrderBookEntry& e2 )
+{
+    return e1.timeStamp < e2.timeStamp;
+}
+
+/**
+ * \brief Compares ascending price
+ * \param e1 the first entry
+ * \param e2 the second entry
+ * \return
+ */
+bool OrderBook::compareByPriceAsc(const OrderBookEntry& e1, const OrderBookEntry& e2)
+{
+    return e1.price < e2.price;
+}
+
+/**
+ * \brief Compares descending price
+ * \param e1 the first entry
+ * \param e2 the second entry
+ * \return
+ */
+bool OrderBook::compareByPriceDesc(const OrderBookEntry& e1, const OrderBookEntry& e2)
+{
+    return e1.price > e2.price;
+}
+
+/**
+ * \brief The matching algorithm for closing open trades on the orderbook
+ * \param product
+ * \param timestamp
+ * \return
+ */
+std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& product, const std::string& timestamp)
+{
+    //sorts asks by lowest first and bids by highest for the current timeframe
+    auto asks = filterOrders(product, timestamp);
+    auto bids = filterOrders(product, timestamp, OrderType::bid);
+    std::sort(asks.begin(), asks.end(), OrderBook::compareByPriceAsc);
+    std::sort(bids.begin(), bids.end(), OrderBook::compareByPriceDesc);
+
+    std::vector<OrderBookEntry> sales;
+
+    for (auto& ask : asks)
+    {
+        for (auto& bid : bids) // O(n²)
+        {
+            if (bid.price >= ask.price) // match
+            {
+                OrderBookEntry sale{
+                    ask.price,
+                    0,
+                    timestamp,
+                    product,
+                    OrderType::sale
+                };
+
+                if (bid.amount == ask.amount)
+                {
+                    sale.amount = ask.amount;
+                    sales.push_back(sale);
+
+                    bid.amount = 0; //the bid is complete
+                    break;
+                }
+
+                if (bid.amount > ask.amount) // ask is completely gone, slice the bid
+                {
+                    sale.amount = ask.amount;
+                    sales.push_back(sale);
+
+                    bid.amount = bid.amount - ask.amount; // an amount of bid remains
+                    break;
+                }
+
+                if (bid.amount < ask.amount) // bid is completely gone, slice the ask
+                {
+                    sale.amount = bid.amount;
+                    sales.push_back(sale);
+
+                    ask.amount = ask.amount - bid.amount; // an amount of ask remains
+                    continue;
+                }
+            }
+        }
+    }
+    return sales;
+}
+
+

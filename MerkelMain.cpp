@@ -22,6 +22,7 @@ void MerkelMain::init()
  */
 void MerkelMain::printMenu()
 {
+    std::cout << "There are " << orderbook.numberOfOrders() << "orders in the book" << std::endl;
     // 1 print help
     std::cout << "1: Print help" << std::endl;
     // 2 print stats

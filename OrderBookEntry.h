@@ -3,7 +3,7 @@
 /**
 * \brief Whether the transaction is a bid or an ask
  */
-enum class OrderType {bid, ask};
+enum class OrderType {bid, ask, sale};
 
 /**
  * \brief Represents an entry in the order books

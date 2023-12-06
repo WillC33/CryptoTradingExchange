@@ -23,7 +23,7 @@ class MerkelMain {
         void completeTrades();
 
         std::string currentTime;
-        OrderBook orderbook{"OrderBook.csv"};
+        OrderBook orderbook{"./OrderBook.csv"};
 
 };
 

@@ -53,15 +53,15 @@ void MerkelMain::handleOffer()
     {
         try
         {
-            CSVReader::input_to_order_book_entry(tokens[0],
+            orderbook.writeOrder(CSVReader::input_to_order_book_entry(tokens[0],
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask);
+              OrderType::ask));
         }
         catch (const std::exception& e)
         {
-            std::cout << "Bad input: Please enter a valid order" << std::endl;
+            std::cout << "Bad input: Please make a valid bid" << std::endl;
         }
     }
 }
@@ -83,18 +83,17 @@ void MerkelMain::handleBid()
     {
         try
         {
-            CSVReader::input_to_order_book_entry(tokens[0],
+            orderbook.writeOrder(CSVReader::input_to_order_book_entry(tokens[0],
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask);
+              OrderType::ask));
         }
         catch (const std::exception& e)
         {
             std::cout << "Bad input: Please make a valid bid" << std::endl;
         }
     }
-
 }
 
 /**
