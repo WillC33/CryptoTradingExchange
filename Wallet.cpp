@@ -95,4 +95,34 @@ bool Wallet::fulfillable(const OrderBookEntry& order)
     return false;
 }
 
+/**
+ * \brief handles the effect of a sale on the wallet
+ * \param sale the sale
+ */
+void Wallet::processSale(const OrderBookEntry& sale)
+{
+    std::vector<std::string> currs = CSVReader::tokenise(sale.product, '/');
+
+    if (sale.orderType == OrderType::askSale)
+    {
+        const double& outgoing = sale.amount;
+        const std::string& outgoingCurrency = currs[0];
+        payFrom(outgoingCurrency, outgoing);
+
+        const double& incoming = sale.amount * sale.price;
+        const std::string& incomingCurrency = currs[1];
+        fund(incomingCurrency, incoming);
+    }
+    else if (sale.orderType == OrderType::bidSale)
+    {
+        const double& outgoing = sale.amount * sale.price;
+        const std::string& outgoingCurrency = currs[1];
+        payFrom(outgoingCurrency, outgoing);
+
+        const double& incoming = sale.amount;
+        const std::string& incomingCurrency = currs[0];
+        fund(incomingCurrency, incoming);
+    }
+}
+
 Wallet::Wallet() = default;

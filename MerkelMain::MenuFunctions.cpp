@@ -57,7 +57,8 @@ void MerkelMain::handleOffer()
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask);
+              OrderType::ask
+              );
 
             if (!wallet.fulfillable(order))
             {
@@ -94,7 +95,8 @@ void MerkelMain::handleBid()
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask);
+              OrderType::bid
+              );
 
             if (!wallet.fulfillable(order))
             {
@@ -117,11 +119,6 @@ void MerkelMain::printWallet()
 {
     std::cout << "Your wallet contains... " << std::endl;
     wallet.print();
-    //this serves as a wallet test
-    wallet.fund("USDT", 10000);
-    wallet.payFrom("USDT", 500);
-    std::cout << "Wallet amounts altered:  " << std::endl;
-    wallet.print(); //BTC: 54.377 USDT: 9500
 }
 
 /**
@@ -139,6 +136,8 @@ void MerkelMain::completeTrades()
         for(const auto& sale : sales)
         {
             std::cout << "Sale: " << sale.amount << " " << sale.product << " @ " << sale.price << std::endl;
+            if (sale.username == "user")
+                wallet.processSale(sale);
         }
     }
 

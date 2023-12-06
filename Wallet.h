@@ -15,6 +15,7 @@ public:
     void payFrom(const std::string& type, const double& amount);
     bool hasSufficientCurrency(const std::string& type, const double& amount);
     bool fulfillable(const OrderBookEntry& order);
+    void processSale(const OrderBookEntry& sale);
     void print();
 
 private:

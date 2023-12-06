@@ -3,7 +3,7 @@
 /**
 * \brief Whether the transaction is a bid or an ask
  */
-enum class OrderType {bid, ask, sale};
+enum class OrderType {bid, ask, bidSale, askSale};
 
 /**
  * \brief Represents an entry in the order books
@@ -18,13 +18,16 @@ public:
      * \param _timeStamp when the transaction was created
      * \param _product the requested products
      * \param _orderType whether the transaction is an order or a bid
+     * \param _username the username of the entry
      */
     OrderBookEntry(
-        double _price,
-        double _amount,
-        std::string _timeStamp,
-        std::string _product,
-        OrderType _orderType);
+        const double& _price,
+        const double& _amount,
+        const std::string& _timeStamp,
+        const std::string& _product,
+        const OrderType& _orderType,
+        const std::string& _username = "dataset"
+        );
 
     static OrderType parseOrderType(std::string);
 
@@ -34,4 +37,5 @@ public:
     std::string timeStamp;
     std::string product;
     OrderType orderType;
+    std::string username;
 };

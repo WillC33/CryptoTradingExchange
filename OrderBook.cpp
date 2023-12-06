@@ -225,18 +225,33 @@ std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& produc
     std::sort(bids.begin(), bids.end(), OrderBook::compareByPriceDesc);
 
     std::vector<OrderBookEntry> sales;
-    for (auto ask : asks)
+    for (auto& ask : asks)
     {
-        for (auto bid : bids) // O(n²)
+        for (auto& bid : bids) // O(n²)
         {
             if (bid.price >= ask.price) // match
             {
+                OrderType type = OrderType::askSale;
+                std::string username = "dataset";
+
+                if (bid.username == "user")
+                {
+                    type = OrderType::bidSale;
+                    username = "user";
+                }
+                else if (ask.username == "user")
+                {
+                    type = OrderType::askSale;
+                    username = "user";
+                }
+
                 OrderBookEntry sale{
                     ask.price,
                     0,
                     timestamp,
                     product,
-                    OrderType::sale
+                    type,
+                    username
                 };
 
                 if (bid.amount == ask.amount)
@@ -245,6 +260,7 @@ std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& produc
                     sales.push_back(sale);
 
                     bid.amount = 0; //the bid is complete
+                    ask.amount = 0;
                     break;
                 }
 
@@ -254,15 +270,17 @@ std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& produc
                     sales.push_back(sale);
 
                     bid.amount = bid.amount - ask.amount; // an amount of bid remains
+                    ask.amount = 0;
                     break;
                 }
 
-                if (bid.amount < ask.amount) // bid is completely gone, slice the ask
+                if (bid.amount < ask.amount && bid.amount > 0) // bid is completely gone, slice the ask
                 {
                     sale.amount = bid.amount;
                     sales.push_back(sale);
 
                     ask.amount = ask.amount - bid.amount; // an amount of ask remains
+                    bid.amount = 0;
                     continue;
                 }
             }

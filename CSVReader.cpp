@@ -97,7 +97,8 @@ OrderBookEntry CSVReader::input_to_order_book_entry(
             amountDbl,
             timestamp,
             product,
-            type
+            type,
+            "user"
         };
     }
     catch(std::exception&)

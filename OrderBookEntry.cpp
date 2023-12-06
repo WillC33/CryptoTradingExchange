@@ -2,16 +2,19 @@
 #include <string>
 
 OrderBookEntry::OrderBookEntry(
-        double _price,
-        double _amount,
-        std::string _timeStamp,
-        std::string _product,
-        OrderType _orderType)
+        const double& _price,
+        const double& _amount,
+        const std::string& _timeStamp,
+        const std::string& _product,
+        const OrderType& _orderType,
+        const std::string& _username
+        )
     : price(_price),
     amount(_amount),
     timeStamp(_timeStamp),
     product(_product),
-    orderType(_orderType)
+    orderType(_orderType),
+    username(_username)
     {
 
     }
