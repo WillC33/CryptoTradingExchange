@@ -1,15 +1,16 @@
 #include <vector>
 #include "OrderBookEntry.h"
+#include "FinancialFunctions.h"
 
 /**
 * \brief Calculates the average price in the list
  * \param entries the order book entries
  * \return double - the average
  */
-double computeAveragePrice(const std::vector<OrderBookEntry>& entries)
+double FinancialFunctions::computeAveragePrice(const std::vector<OrderBookEntry>& entries)
 {
     double sum = 0;
-    for (const OrderBookEntry entry : entries)
+    for (const OrderBookEntry& entry : entries)
     {
         sum += entry.price;
     }
@@ -21,10 +22,10 @@ double computeAveragePrice(const std::vector<OrderBookEntry>& entries)
  * \param entries the order book entries
  * \return double - the lowest value
  */
-double computeLowPrice(const std::vector<OrderBookEntry>& entries)
+double FinancialFunctions::computeLowPrice(const std::vector<OrderBookEntry>& entries)
 {
     double lowPrice = entries[0].price;
-    for (const OrderBookEntry entry : entries)
+    for (const OrderBookEntry& entry : entries)
     {
         if (entry.price < lowPrice)
             lowPrice = entry.price;
@@ -37,10 +38,10 @@ double computeLowPrice(const std::vector<OrderBookEntry>& entries)
  * \param entries the order book entries
  * \return double - the highest value
  */
-double computeHighPrice(const std::vector<OrderBookEntry>& entries)
+double FinancialFunctions::computeHighPrice(const std::vector<OrderBookEntry>& entries)
 {
     double highPrice = entries[0].price;
-    for (const OrderBookEntry entry : entries)
+    for (const OrderBookEntry& entry : entries)
     {
         if (entry.price > highPrice)
             highPrice = entry.price;
@@ -53,7 +54,7 @@ double computeHighPrice(const std::vector<OrderBookEntry>& entries)
  * \param entries the order book entries
  * \return double - the spread
  */
-double computePriceSpread(const std::vector<OrderBookEntry>& entries)
+double FinancialFunctions::computePriceSpread(const std::vector<OrderBookEntry>& entries)
 {
     const double lowPrice = computeLowPrice(entries);
     const double highPrice = computeHighPrice(entries);

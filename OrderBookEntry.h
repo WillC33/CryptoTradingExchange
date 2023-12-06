@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 /**
 * \brief Whether the transaction is a bid or an ask
@@ -24,6 +25,8 @@ public:
         std::string _timeStamp,
         std::string _product,
         OrderType _orderType);
+
+    static OrderType parseOrderType(std::string);
 
     // Members
     double price;

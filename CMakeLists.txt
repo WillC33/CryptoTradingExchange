@@ -4,11 +4,15 @@ project(untitled)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(untitled main.cpp
-        IoOperations.cpp
-        MenuFunctions.cpp
+        MerkelMain::MenuFunctions.cpp
         OrderBookEntry.cpp
         OrderBookEntry.h
         MerkelMain.cpp
         MerkelMain.h
-        MenuFunctions.h
-        FinancialFunctions.cpp)
+        FinancialFunctions.cpp
+        CSVReader.cpp
+        CSVReader.h
+        FinancialFunctions.h
+        OrderBook.cpp
+        OrderBook.h
+)

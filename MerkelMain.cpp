@@ -1,11 +1,11 @@
 #include "MerkelMain.h"
-#include "MenuFunctions.h"
 
 #include <iostream>
 #include <map>
 
 void MerkelMain::init()
 {
+
     while (true)
     {
         printMenu();
@@ -60,13 +60,13 @@ int MerkelMain::getUserOption()
 void MerkelMain::processUserOption(const int userOption)
 {
     //maps int keys to void * functions in the list 'menu'
-    std::map<int,void(*)()> menu;
-    menu[1] = printHelp;
-    menu[2] = printMarketStats;
-    menu[3] = handleOffer;
-    menu[4] = handleBid;
-    menu[5] = printWallet;
-    menu[6] = completeTrades;
+    std::map<int, std::function<void()>> menu;
+    menu[1] = [this]() { this->printHelp(); };
+    menu[2] = [this]() { this->printMarketStats(); };
+    menu[3] = [this]() { this->handleOffer(); };
+    menu[4] = [this]() { this->handleBid(); };
+    menu[5] = [this]() { this->printWallet(); };
+    menu[6] = [this]() { this->completeTrades(); };
 
     if (1 <= userOption && userOption <= 6)
         menu[userOption]();
