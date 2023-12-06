@@ -13,4 +13,6 @@ add_executable(untitled main.cpp
         CSVReader.h
         OrderBook.cpp
         OrderBook.h
+        Wallet.cpp
+        Wallet.h
 )

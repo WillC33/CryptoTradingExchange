@@ -1,5 +1,6 @@
 #include "OrderBook.h"
 
+#include <iostream>
 #include <map>
 
 #include "CSVReader.h"
@@ -32,7 +33,6 @@ std::string OrderBook::getNextTime(const std::string& timestamp)
 std::vector<std::string> OrderBook::getKnownProducts()
 {
     std::vector<std::string> products;
-
     std::map<std::string, bool>prodMap;
 
     for(OrderBookEntry& e : entries)
@@ -212,23 +212,22 @@ bool OrderBook::compareByPriceDesc(const OrderBookEntry& e1, const OrderBookEntr
 
 /**
  * \brief The matching algorithm for closing open trades on the orderbook
- * \param product
- * \param timestamp
+ * \param product the product to match transactions for
+ * \param timestamp the frame to match in
  * \return
  */
 std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& product, const std::string& timestamp)
 {
     //sorts asks by lowest first and bids by highest for the current timeframe
-    auto asks = filterOrders(product, timestamp);
+    auto asks = filterOrders(product, timestamp, OrderType::ask);
     auto bids = filterOrders(product, timestamp, OrderType::bid);
     std::sort(asks.begin(), asks.end(), OrderBook::compareByPriceAsc);
     std::sort(bids.begin(), bids.end(), OrderBook::compareByPriceDesc);
 
     std::vector<OrderBookEntry> sales;
-
-    for (auto& ask : asks)
+    for (auto ask : asks)
     {
-        for (auto& bid : bids) // O(n²)
+        for (auto bid : bids) // O(n²)
         {
             if (bid.price >= ask.price) // match
             {

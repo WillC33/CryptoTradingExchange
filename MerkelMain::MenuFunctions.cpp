@@ -16,7 +16,7 @@ void MerkelMain::printHelp()
  */
 void MerkelMain::printMarketStats()
 {
-    auto productList = orderbook.getKnownProducts();
+    const auto productList = orderbook.getKnownProducts();
 
     for(const auto& p : productList)
     {
@@ -53,15 +53,22 @@ void MerkelMain::handleOffer()
     {
         try
         {
-            orderbook.writeOrder(CSVReader::input_to_order_book_entry(tokens[0],
+            const auto order = CSVReader::input_to_order_book_entry(tokens[0],
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask));
+              OrderType::ask);
+
+            if (!wallet.fulfillable(order))
+            {
+                std::cout << "Insufficient funds" << std::endl;
+                return;
+            }
+            orderbook.writeOrder(order);
         }
         catch (const std::exception& e)
         {
-            std::cout << "Bad input: Please make a valid bid" << std::endl;
+            std::cout << "Bad input: " << static_cast<std::string>(e.what()) << std::endl;
         }
     }
 }
@@ -83,15 +90,22 @@ void MerkelMain::handleBid()
     {
         try
         {
-            orderbook.writeOrder(CSVReader::input_to_order_book_entry(tokens[0],
+            const auto order = CSVReader::input_to_order_book_entry(tokens[0],
               tokens[1],
               tokens[2],
               currentTime,
-              OrderType::ask));
+              OrderType::ask);
+
+            if (!wallet.fulfillable(order))
+            {
+                std::cout << "Insufficient funds" << std::endl;
+                return;
+            }
+            orderbook.writeOrder(order);
         }
         catch (const std::exception& e)
         {
-            std::cout << "Bad input: Please make a valid bid" << std::endl;
+            std::cout << "Bad input: Please make a valid bid and check funds" << std::endl;
         }
     }
 }
@@ -101,7 +115,13 @@ void MerkelMain::handleBid()
  */
 void MerkelMain::printWallet()
 {
-    std::cout << "Your wallet is empty... " << std::endl;
+    std::cout << "Your wallet contains... " << std::endl;
+    wallet.print();
+    //this serves as a wallet test
+    wallet.fund("USDT", 10000);
+    wallet.payFrom("USDT", 500);
+    std::cout << "Wallet amounts altered:  " << std::endl;
+    wallet.print(); //BTC: 54.377 USDT: 9500
 }
 
 /**
@@ -109,7 +129,19 @@ void MerkelMain::printWallet()
  */
 void MerkelMain::completeTrades()
 {
-    std::cout << "Completing timeframe" << std::endl;
+    std::cout << "Completing timeframe..." << std::endl;
+
+    const auto productList = orderbook.getKnownProducts();
+
+    for(const auto& p : productList)
+    {
+        const auto sales = orderbook.matchBidsToAsks(p, currentTime);
+        for(const auto& sale : sales)
+        {
+            std::cout << "Sale: " << sale.amount << " " << sale.product << " @ " << sale.price << std::endl;
+        }
+    }
+
     currentTime = orderbook.getNextTime(currentTime);
     std::cout << "Current time is: " << currentTime << std::endl;
 }

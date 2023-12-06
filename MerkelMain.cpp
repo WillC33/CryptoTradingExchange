@@ -7,6 +7,7 @@ void MerkelMain::init()
 {
 
     currentTime = orderbook.getEarliestTime();
+    wallet.fund("BTC", 54.377);
 
     std::cout << "The current time is: " << currentTime << std::endl;
 
@@ -22,7 +23,7 @@ void MerkelMain::init()
  */
 void MerkelMain::printMenu()
 {
-    std::cout << "There are " << orderbook.numberOfOrders() << "orders in the book" << std::endl;
+    std::cout << "There are " << orderbook.numberOfOrders() << " orders in the book" << std::endl;
     // 1 print help
     std::cout << "1: Print help" << std::endl;
     // 2 print stats

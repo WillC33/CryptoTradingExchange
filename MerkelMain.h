@@ -2,6 +2,7 @@
 #define MERKELMAIN_H
 
 #include "OrderBook.h"
+#include "Wallet.h"
 
 
 class MerkelMain {
@@ -24,6 +25,7 @@ class MerkelMain {
 
         std::string currentTime;
         OrderBook orderbook{"./OrderBook.csv"};
+        Wallet wallet;
 
 };
 

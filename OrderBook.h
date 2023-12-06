@@ -29,7 +29,7 @@ public:
     double computePriceSpread(const std::string& product, const std::string& timestamp);
     unsigned int numberOfOrders();
 
-    std::vector<OrderBookEntry> OrderBook::matchBidsToAsks(const std::string& product, const std::string& timestamp);
+    std::vector<OrderBookEntry> matchBidsToAsks(const std::string& product, const std::string& timestamp);
 
 private:
      std::vector<OrderBookEntry> entries;
