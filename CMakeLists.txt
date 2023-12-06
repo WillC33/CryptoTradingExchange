@@ -9,10 +9,8 @@ add_executable(untitled main.cpp
         OrderBookEntry.h
         MerkelMain.cpp
         MerkelMain.h
-        FinancialFunctions.cpp
         CSVReader.cpp
         CSVReader.h
-        FinancialFunctions.h
         OrderBook.cpp
         OrderBook.h
 )

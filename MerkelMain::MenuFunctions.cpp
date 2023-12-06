@@ -1,5 +1,6 @@
 #include <iostream>
-#include "FinancialFunctions.h"
+
+#include "CSVReader.h"
 #include "MerkelMain.h"
 
 /**
@@ -19,16 +20,17 @@ void MerkelMain::printMarketStats()
 
     for(const auto& p : productList)
     {
-        auto entries = orderbook.getOrders(p);
-        auto avg = FinancialFunctions::computeAveragePrice(entries);
-        auto high = FinancialFunctions::computeHighPrice(entries);
-        auto low = FinancialFunctions::computeLowPrice(entries);
-        auto spread = FinancialFunctions::computePriceSpread(entries);
+        auto changeSinceLogon = orderbook.changeSinceLogon(p, currentTime);
+        auto avg = orderbook.computeAveragePrice(p, currentTime);
+        auto high = orderbook.computeHighPrice(p, currentTime);
+        auto low = orderbook.computeLowPrice(p, currentTime);
+        auto spread = orderbook.computePriceSpread(p, currentTime);
 
         std::cout << "Product: " << p << std::endl;
-        std::cout << "Average: " << avg << std::endl;
-        std::cout << "High: " << high << std::endl;
-        std::cout << "Low: " << low << std::endl;
+        std::cout << "Change since logon: " << changeSinceLogon << "%" << std::endl;
+        std::cout << "Average Ask: " << avg << std::endl;
+        std::cout << "High Ask: " << high << std::endl;
+        std::cout << "Low Ask: " << low << std::endl;
         std::cout << "Spread: " << spread << std::endl;
         std::cout << "===============" << std::endl;
     }
@@ -39,7 +41,29 @@ void MerkelMain::printMarketStats()
  */
 void MerkelMain::handleOffer()
 {
-    std::cout << "Make an offer - enter the amount! " << std::endl;
+    std::cout << "Make an offer - format: product,price,amount" << std::endl;
+    std::string input;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, input);
+    std::cout << "Entered: " << input << std::endl;
+    std::vector<std::string> tokens = CSVReader::tokenise(input , ',');
+    if (tokens.size() != 3)
+        std::cout << "Bad input : " << input << std::endl;
+    else
+    {
+        try
+        {
+            CSVReader::input_to_order_book_entry(tokens[0],
+              tokens[1],
+              tokens[2],
+              currentTime,
+              OrderType::ask);
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << "Bad input: Please enter a valid order" << std::endl;
+        }
+    }
 }
 
 /**
@@ -47,7 +71,30 @@ void MerkelMain::handleOffer()
  */
 void MerkelMain::handleBid()
 {
-    std::cout << "Make a bid - enter the amount! " << std::endl;
+    std::cout << "Make a bid - format: product,price,amount" << std::endl;
+    std::string input;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, input);
+    std::cout << "Entered: " << input << std::endl;
+    std::vector<std::string> tokens = CSVReader::tokenise(input , ',');
+    if (tokens.size() != 3)
+        std::cout << "Bad input : " << input << std::endl;
+    else
+    {
+        try
+        {
+            CSVReader::input_to_order_book_entry(tokens[0],
+              tokens[1],
+              tokens[2],
+              currentTime,
+              OrderType::ask);
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << "Bad input: Please make a valid bid" << std::endl;
+        }
+    }
+
 }
 
 /**
@@ -64,4 +111,6 @@ void MerkelMain::printWallet()
 void MerkelMain::completeTrades()
 {
     std::cout << "Completing timeframe" << std::endl;
+    currentTime = orderbook.getNextTime(currentTime);
+    std::cout << "Current time is: " << currentTime << std::endl;
 }

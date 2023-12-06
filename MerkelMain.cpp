@@ -6,6 +6,10 @@
 void MerkelMain::init()
 {
 
+    currentTime = orderbook.getEarliestTime();
+
+    std::cout << "The current time is: " << currentTime << std::endl;
+
     while (true)
     {
         printMenu();
@@ -43,7 +47,7 @@ int MerkelMain::getUserOption()
     //using the extraction operator to recieve input
     int userOption;
     std::cin >> userOption;
-    //handles the strange loop that appeared on windows
+    //handles the strange loop when invalid input entered
     if (std::cin.fail())
     {
         std::cin.clear();

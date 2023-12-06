@@ -71,6 +71,43 @@ OrderBookEntry CSVReader::strings_to_order_book_entry(std::vector<std::string> t
 }
 
 /**
+ * \brief converts user input to an entry
+ * \param product the product pair
+ * \param price the price
+ * \param amount the amount
+ * \param timestamp the timestamp
+ * \param type the OrderType
+ * \return an OrderBookEntry
+ */
+OrderBookEntry CSVReader::input_to_order_book_entry(
+      std::string product,
+      std::string price,
+      std::string amount,
+      std::string timestamp,
+      OrderType type
+      )
+{
+    try
+    {
+        const double priceDbl = std::stod(price);
+        const double amountDbl = std::stod(amount);
+
+        return OrderBookEntry{
+            priceDbl,
+            amountDbl,
+            timestamp,
+            product,
+            type
+        };
+    }
+    catch(std::exception&)
+    {
+        std::cout << "The input line could not be converted" << std::endl;
+        throw;
+    }
+}
+
+/**
  * \brief Parses an order book CSV file into valid order objects
  * \return a vector of OrderBookEntry objects
  */

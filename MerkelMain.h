@@ -22,6 +22,7 @@ class MerkelMain {
         void printWallet();
         void completeTrades();
 
+        std::string currentTime;
         OrderBook orderbook{"OrderBook.csv"};
 
 };
